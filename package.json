@@ -1,0 +1,16 @@
+{
+  "name": "frame-streamer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Stream.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "node-wordnet": "^0.1.12",
+    "wndb-with-exceptions": "^3.0.2"
+  }
+}
