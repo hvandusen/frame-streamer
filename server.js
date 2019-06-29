@@ -7,7 +7,7 @@ const stream = require("./Stream.js");
 let  words = [];
 const getWords =  () => stream().then(e => words = e);
 
-getWords();
+getWords() ;
 
 app.get("*", (req, res) => {
   res.send(words)
