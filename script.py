@@ -1,1 +1,1 @@
-print  "yahahaha boi"
+print  ("yahahaha boi")
