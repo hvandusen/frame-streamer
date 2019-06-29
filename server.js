@@ -4,8 +4,13 @@ const app = express()
 const port = process.env.PORT || 3002;// === "production" ? 80 : 3002;
 const fs = require("fs")
 const stream = require("./Stream.js");
-let  words = [];
-const getWords =  () => stream().then(e => words = e);
+const spawn = require("child_process").spawn;
+const pythonProcess = spawn("python",["script.py"])
+let  words = "";
+pythonProcess.stdout.on('data', data => {
+  words += data
+});
+const getWords =  () => stream().then(e => words += e.join(", "));
 
 getWords() ;
 
