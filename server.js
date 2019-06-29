@@ -4,9 +4,14 @@ const app = express()
 const port = process.env.PORT || 3002;// === "production" ? 80 : 3002;
 const fs = require("fs")
 const stream = require("./Stream.js");
+let  words = [];
+const getWords =  () => stream().then(e => words = e);
+
+getWords();
 
 app.get("*", (req, res) => {
-  stream().then(res.send)
+  res.send(words)
+  getWords();
 })
 
 // app.get("*", (req, res) => {

@@ -8,19 +8,17 @@ Array.prototype.random = function(){
 
 let tangent = [];
 let wordGroup = words;
-async function stream(count=10){
-  console.log("doing function stream")
+async function stream(count=10,tangent = []){
   let search = await randomRelatedWord(wordGroup,20);
   tangent.push(search.word);
   wordGroup = search.relatedWords;
   if(count>0)
-    return stream(count-1)
+    return stream(count-1,tangent)
   else {
     return arrayUnique(tangent);
   }
 
   async function randomRelatedWord(words=words,ensureCount = 0){
-    console.log("doing function randomRelatedWord")
     let wordChoice = words.random();
     var t = await wn.lookupAsync(wordChoice).then(getTangents);
     while(t.length <= ensureCount){
@@ -32,7 +30,6 @@ async function stream(count=10){
   }
 
   function getTangents(entries){
-    console.log("doing function getTangents")
     let tangents = [];
     entries.map(entry => {
       tangents.push(entry.lemma);
@@ -44,7 +41,6 @@ async function stream(count=10){
     return arrayUnique(tangents);
 
     function extractGoodWords(string){
-      console.log("doing function extractGoodWords")
       var choices = string.split(" ");
       choices = choices.filter((w)=>{
         return w.length>3 && ["of","a","to","from","the","for","with","because","than"].indexOf(w)<0;
@@ -58,7 +54,6 @@ async function stream(count=10){
   }
 
   function arrayUnique(arr){
-    console.log("doing function arrayUnique")
     return arr.filter(function(item, index){
       return arr.indexOf(item) >= index;
     });
