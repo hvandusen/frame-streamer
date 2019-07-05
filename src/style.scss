@@ -1,0 +1,90 @@
+.word {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  &.ready {
+    display: block;
+  }
+  &.current {
+    display: block;
+  }
+  &:nth-child(1){
+    z-index: 111;
+  }
+  &:nth-child(2){
+    z-index: 110;
+  }
+  &:nth-child(3){
+    z-index: 109;
+  }
+  &:nth-child(4){
+    z-index: 108;
+  }
+  &:nth-child(5){
+    z-index: 107;
+  }
+  &:nth-child(6){
+    z-index: 106;
+  }
+  &:nth-child(7){
+    z-index: 105;
+  }
+  &:nth-child(8){
+    z-index: 104;
+  }
+  &:nth-child(9){
+    z-index: 103;
+  }
+  &:nth-child(10){
+    z-index: 102;
+  }
+  &:nth-child(11){
+    z-index: 101;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.slide {
+  width: 100vw;
+  height: 100vh;
+  display: inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  // transition: 1s opacity;
+  opacity: 0;
+  // visibility: hidden;
+  z-index: -100;
+  position: absolute;
+  // transition: 0s visibility, opacity.4s;
+  &.used {
+    animation: fadeOut .3s linear;
+  }
+  // display: none;
+  &.active  {
+    opacity: 1;
+    // visibility: visible;
+    animation: fadeIn .3s linear;
+    // transition-delay: visibility 0s;
+  }
+}
