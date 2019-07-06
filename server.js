@@ -51,7 +51,7 @@ getWords();
 
 // setInterval(getWords,100000)
 
-app.use('/', express.static("dist"));
+app.use('/', express.static("app/build"));
 
 app.get("/json", (req, res) => {
   res.send(wordLinks)
@@ -60,7 +60,7 @@ app.get("/json", (req, res) => {
 })
 
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "dist", "index.html"));
+  res.sendFile(path.resolve(__dirname, "app/build", "index.html"));
 });
 
 // app.get("/", (req, res) => {

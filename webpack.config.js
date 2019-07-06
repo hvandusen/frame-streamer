@@ -31,7 +31,7 @@ module.exports = {
   },
   output: {
     filename: 'main.js',
-    path: path.join(__dirname, '/build'),
+    path: path.join(__dirname, '/app/build'),
   },
   plugins: [
     new HtmlWebPackPlugin({
