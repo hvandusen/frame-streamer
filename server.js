@@ -4,6 +4,7 @@ const app = express()
 const port = process.env.PORT || 3002;// === "production" ? 80 : 3002;
 const fs = require("fs")
 const stream = require("./Stream.js");
+const wikiStream = require("./WikiStream.js");
 const spawn = require("child_process").spawn;
 // const pythonProcess = spawn("python",["script.py"])
 let wordLinks = [];
@@ -15,7 +16,7 @@ function getUrlsFromWord(word){
     pythonProcess = spawn("sh",["-c",'python script.py '+word+' | grep -o "http.*$"'])
     pythonProcess.stdout.on('data', data => {
       resolve(data.toString().split("https").join("https"))
-      console.log("got  data for "+word)
+      console.log("got  data for "+word+data)
     });
     pythonProcess.stderr.on('data', data => {
       reject(data.toString())
@@ -30,7 +31,7 @@ const isValidUrl = (e) => {
   && e !== "";
 }
 
-let getWords = (count=10) => stream(count).then(newWords => {
+let getWords = (count=10) => wikiStream(count).then(newWords => {
   wordLinks  = [];
   let googleSearches = newWords.map((newWord,i) => {
     wordLinks.push({word: newWord})
@@ -48,14 +49,14 @@ let getWords = (count=10) => stream(count).then(newWords => {
 });
 
 getWords();
-
+setInterval(getWords,30000)
 // setInterval(getWords,100000)
 
 app.use('/', express.static("app/build"));
 
 app.get("/json", (req, res) => {
   res.send(wordLinks)
-  getWords();
+
   console.log(wordLinks)
 })
 

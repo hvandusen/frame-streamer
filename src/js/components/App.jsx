@@ -1,5 +1,7 @@
 import React, { Component, useState, useEffect, useRef } from "react";
 import axios from 'axios';
+
+import slugify from 'slugify';
 import imagesLoaded from 'imagesloaded';
 let imgLoad;
 const App = () => {
@@ -14,6 +16,7 @@ const App = () => {
   function queueImages(){
     axios.get(`/json`).then(res => {
       const newWords = res.data;
+      console.log(newWords)
       newWords.forEach(function(element) { element.ready = false; });
       setWords(words.concat(newWords));
     });
@@ -52,13 +55,13 @@ const App = () => {
       }
     }, [delay]);
   }
-
+  const  slug = (word) => slugify(word.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, ''));
   useEffect(() => {
     // Update the document title using the browser API
     console.log("effect used")
     words.map(function(word){
-      const theClassName = "."+word.word+" .slide";
-      imagesLoaded("."+word.word+" .slide",{background:true})
+      const theClassName = "."+slug(word.word)+" .slide";
+      imagesLoaded("."+slug(word.word)+" .slide",{background:true})
       .on("progress",function(instance,image){
           if(!image.isLoaded)
             console.log("failure!!",image)
@@ -71,7 +74,7 @@ const App = () => {
   return (
     <div className={count+" yah"}>
       { ready ? words.map( (e,i)  => {
-        return <div key={i} className={(i === currentWord ? "current " : " ")+e.word+" word"}>
+        return <div key={i} className={(i === currentWord ? "current " : " ")+slug(e.word)+" word"}>
           {e.urls.map((url,j)  => {
             let slideClass = i === currentWord && j === count ? "active " : "";
             slideClass += (j < count ? "used" : "");
