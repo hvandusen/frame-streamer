@@ -31,14 +31,13 @@ const isValidUrl = (e) => {
   && e !== "";
 }
 
-let getWords = (count=10) => wikiStream(count).then(newWords => {
+let getWords = (count=10) => stream(count).then(newWords => {
   wordLinks  = [];
   let googleSearches = newWords.map((newWord,i) => {
     wordLinks.push({word: newWord})
     return getUrlsFromWord(newWord)
   })
   Promise.all(googleSearches).then( wordSearches => {
-    console.log("RESOLVED!!!")
     for(i in wordSearches){
       let urls = wordSearches[i];
       wordLinks[i].urls = urls.split("\n").filter( e => e.length>0);
