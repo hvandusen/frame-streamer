@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack")
 module.exports = {
   devServer: {
     proxy: {
@@ -29,6 +30,7 @@ module.exports = {
       }
     ]
   },
+  devtool: 'cheap-module-eval-source-map',
   output: {
     filename: 'main.js',
     path: path.join(__dirname, '/app/build'),

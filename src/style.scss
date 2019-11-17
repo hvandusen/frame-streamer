@@ -1,15 +1,27 @@
 .word {
-  display: none;
+  // display: none;
   position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+  &.testing {
+    display: inline-block !important;
+    height: 20vw;
+    width: 47vw;
+    display: inline-grid !important;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    position: static;
+    box-shadow: 5px 5px 5px;
+    margin: 1vw;
+  }
   &.ready {
     display: block;
   }
   &.current {
     display: block;
+      border: solid black 1px;
   }
   &:nth-child(1){
     z-index: 111;
@@ -64,6 +76,16 @@
   }
 }
 
+.testing .slide {
+  position: static;
+  width: auto;
+  height: auto;
+  opacity: 1;
+  &.active {
+    border: solid black 1px;
+  }
+}
+
 .slide {
   width: 100vw;
   height: 100vh;
@@ -87,4 +109,5 @@
     animation: fadeIn .3s linear;
     // transition-delay: visibility 0s;
   }
+
 }

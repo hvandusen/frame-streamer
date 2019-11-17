@@ -25,7 +25,7 @@ async function stream(count=10,tangent = []){
       wordChoice = words.random();
       t = await wn.lookupAsync(wordChoice).then(getTangents);
     }
-    return {word: wordChoice,
+    return {word: wordChoice.toLowerCase(),
     relatedWords: t}
   }
 

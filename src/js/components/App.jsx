@@ -4,26 +4,51 @@ import axios from 'axios';
 import slugify from 'slugify';
 import imagesLoaded from 'imagesloaded';
 let imgLoad;
+
+function isEmptyObject(obj) {
+  for(var prop in obj) {
+    if(obj.hasOwnProperty(prop)) {
+      return false;
+    }
+  }
+
+  return JSON.stringify(obj) === JSON.stringify({});
+}
+
+function wordValid(word){
+  return word.urls && word.urls.length > 0
+}
+
 const App = () => {
   // Declare a new state variable, which we'll call "count"
   const [words, setWords] = useState([]);
   const [currentWord, setCurrentWord] = useState(0);
   const [count, setCount] = useState(0);
   const [ready, setReady] = useState(false);
-  if(words.length === 0)
+  if(words.length === 0){
+    console.log("no words")
     queueImages();
+  }
 
   function queueImages(){
     axios.get(`/json`).then(res => {
-      const newWords = res.data;
-      console.log(newWords)
+      if(isEmptyObject(res.data))
+        return
+      let newWords = res.data;
+      newWords = newWords.map(word => {
+        word.urls = word.urls.filter(url => url.indexOf(" ")<0);
+        return word;
+      })
+      console.log('/json saved as newWords: ',newWords)
       newWords.forEach(function(element) { element.ready = false; });
       setWords(words.concat(newWords));
     });
   }
   useInterval(() => {
+    if(!words.length || !words[currentWord].urls)
+      return
     //not  really a  good check  assumes  if  theres  anything there we're  good
-    console.log(words[currentWord].urls.length , count+1)
+    console.log("count: ",count,", current: "+currentWord+", current urls length: ",words[currentWord] )
     //advance words
     if(words[currentWord].urls.length === count+1){
       setCount(0)
@@ -33,6 +58,7 @@ const App = () => {
       setCount(count+1);
     }
     if (currentWord === words.length-1 && count === 0) {
+      console.log("queueing images")
       queueImages();
     }
   }, 5000)
@@ -55,9 +81,11 @@ const App = () => {
       }
     }, [delay]);
   }
+
   const  slug = (word) => slugify(word.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, ''));
   useEffect(() => {
-    // Update the document title using the browser API
+    if(!words[currentWord] || !words[currentWord].urls)
+      return
     console.log("effect used")
     words.map(function(word){
       const theClassName = "."+slug(word.word)+" .slide";
@@ -66,6 +94,9 @@ const App = () => {
           if(!image.isLoaded)
             console.log("failure!!",image)
       }).on("always",function(i,e){
+
+      }).on("done",function(){
+        console.log("shits done")
         setReady(true);
       });
     });
@@ -73,11 +104,12 @@ const App = () => {
 
   return (
     <div className={count+" yah"}>
-      { ready ? words.map( (e,i)  => {
-        return <div key={i} className={(i === currentWord ? "current " : " ")+slug(e.word)+" word"}>
-          {e.urls.map((url,j)  => {
+      { ready ? words.filter(wordValid).map( (e,i)  => {
+        return <div key={i} className={(i === currentWord ? "current " : " ")+slug(e.word)+" word testing"}>
+          { e.urls && e.urls.map((url,j)  => {
             let slideClass = i === currentWord && j === count ? "active " : "";
-            slideClass += (j < count ? "used" : "");
+            slideClass += (i < currentWord || j < count ? "used" : "");
+            // console.log("added word: ",e,", url: ",url)
             return <div className={"slide "+slideClass} key={j} style={{backgroundImage: "url("+url+")"}}></div>
           })}
           </div>
