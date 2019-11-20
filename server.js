@@ -36,8 +36,8 @@ function getUrlsFromWord(word){
     });
   });
 }
-
 var addedWords = [];
+
 const isValidUrl = (e) => {
   console.log("herei s e",e)
   return e.indexOf("https://www.facebook.com")<0
@@ -47,13 +47,14 @@ const isValidUrl = (e) => {
 let getWords = (count=7) => stream(count).then(newWords => {
   wordLinks  = [];
   let googleSearches = newWords.map((newWord,i) => {
+    wordLinks.push({word: newWord})
     return getUrlsFromWord(newWord)
   })
   Promise.all(googleSearches).then( wordSearches => {
     console.log("google searches done")
     for(i in wordSearches){
       let urls = wordSearches[i];
-      wordLinks.push({word: newWord,urls : urls.split("\n").filter(validWord)})
+      wordLinks[i].urls = urls.split("\n").filter(validWord);
     };
     // wordLinks = addedWords;
     // addedWords = [];

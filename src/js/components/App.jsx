@@ -32,8 +32,10 @@ const App = () => {
 
   function queueImages(){
     axios.get(`/json`).then(res => {
-      if(isEmptyObject(res.data))
+      if(isEmptyObject(res.data)){
+        console.log("apparently empty")
         return
+      }
       let newWords = res.data;
       newWords = newWords.map(word => {
         word.urls = word.urls.filter(url => url.indexOf(" ")<0);
@@ -51,8 +53,8 @@ const App = () => {
     console.log("count: ",count,", current: "+currentWord+", current urls length: ",words[currentWord] )
     //advance words
     if(words[currentWord].urls.length === count+1){
-      setCount(0)
-      setCurrentWord(currentWord+1)
+      setCount(0);
+      setCurrentWord(currentWord+1);
     }
     else {
       setCount(count+1);
@@ -61,7 +63,8 @@ const App = () => {
       console.log("queueing images")
       queueImages();
     }
-  }, 5000)
+  }, 1000)
+
   function useInterval(callback, delay) {
     const savedCallback = useRef();
 
@@ -101,19 +104,20 @@ const App = () => {
       });
     });
   },[words]);
-
+  console.log("rendering")
   return (
-    <div className={count+" yah"}>
+    <div className="yah">
+      <div key={0}>count: {count} currentWord: {currentWord}</div>
       { ready ? words.filter(wordValid).map( (e,i)  => {
-        return <div key={i} className={(i === currentWord ? "current " : " ")+slug(e.word)+" word testing"}>
+        return <div key={i+1} className={(i === currentWord ? "current " : " ")+slug(e.word)+" word testing"}>
           { e.urls && e.urls.map((url,j)  => {
             let slideClass = i === currentWord && j === count ? "active " : "";
-            slideClass += (i < currentWord || j < count ? "used" : "");
+            slideClass += (i <= currentWord || j < count ? "used" : "");
             // console.log("added word: ",e,", url: ",url)
             return <div className={"slide "+slideClass} key={j} style={{backgroundImage: "url("+url+")"}}></div>
           })}
           </div>
-      }) : "Loading :)"}
+      }) : <div key={1}>"Loading :)"</div>}
     </div>
   );
 }
