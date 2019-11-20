@@ -8,7 +8,6 @@ const wikiStream = require("./WikiStream.js");
 const spawn = require("child_process").spawn;
 // const pythonProcess = spawn("python",["script.py"])
 let wordLinks = [];
-let  words = "";
 let pythonProcess;
 let totalWordListSize = 0;
 
@@ -44,45 +43,43 @@ const isValidUrl = (e) => {
   && e !== "";
 }
 
-let getWords = (count=7) => stream(count).then(newWords => {
-  wordLinks  = [];
+let getWords = (startingWord=null,count=10) => stream(startingWord,count).then(newWords => {
+  // wordLinks  = [];
+  console.log("uh",newWords)
+  let offset = wordLinks.length
   let googleSearches = newWords.map((newWord,i) => {
     wordLinks.push({word: newWord})
-    return getUrlsFromWord(newWord)
-  })
-  Promise.all(googleSearches).then( wordSearches => {
-    console.log("google searches done")
-    for(i in wordSearches){
-      let urls = wordSearches[i];
-      wordLinks[i].urls = urls.split("\n").filter(validWord);
-    };
-    // wordLinks = addedWords;
-    // addedWords = [];
+    getUrlsFromWord(newWord).then( wordSearch => {
+      let urls = wordSearch.split("\n").filter(validWord);
+      // console.log("urls length for ",newWord,": ",urls)
+      wordLinks[offset+i].urls =  [...urls]
+      // wordLinks[i].urls = urls.split("\n").filter(validWord);
+    })
   })
 });
 
-getWords();
-setInterval(getWords,30000)
+getWords("pig");
+setInterval(() => {
+  getWords(wordLinks[wordLinks.length-1].word)
+},10000)
 // setInterval(getWords,100000)
 
 app.use('/', express.static("app/build"));
 
 app.get("/json", (req, res) => {
-  res.send(wordLinks)
-
-  console.log(wordLinks)
+  wordLinks = wordLinks.filter( word => word.urls && word.urls.length)
+  if(req.query && req.query.offset){
+    console.log("got query "+req.query.offset)
+    res.send(wordLinks.slice(wordLinks.findIndex((item) => item.word === req.query.offset)+1,25))
+  } else{
+    res.send(wordLinks.slice(0,25))
+  }
+  console.log(wordLinks.map( word => word.word))
 })
 
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "app/build", "index.html"));
 });
 
-// app.get("/", (req, res) => {
-  // res.sendFile(path.resolve(__dirname, "dist", "index.html"));
-// })
-
-// app.get("*", (req, res) => {
-//
-// });
 
 app.listen(port, () => console.log(`listening on port ${port}!`))

@@ -8,12 +8,19 @@ Array.prototype.random = function(){
 
 let tangent = [];
 let wordGroup = words;
-async function stream(count=10,tangent = []){
-  let search = await randomRelatedWord(wordGroup,20);
-  tangent.push(search.word);
-  wordGroup = search.relatedWords;
+async function stream(startWord=null,count=10,tangent = []){
+  let search;
+
+  if(startWord || false){
+    tangent.push(startWord)
+  }
+  else {
+    search = await randomRelatedWord(wordGroup,20);
+    tangent.push(search.word);
+    wordGroup = search.relatedWords;
+  }
   if(count>0)
-    return stream(count-1,tangent)
+    return stream(null,count-1,tangent)
   else {
     return arrayUnique(tangent);
   }

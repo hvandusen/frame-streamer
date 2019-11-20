@@ -30,27 +30,34 @@ const App = () => {
     queueImages();
   }
 
-  function queueImages(){
-    axios.get(`/json`).then(res => {
+  function queueImages(wordOffset=""){
+    let params = wordOffset.length ? {
+      params: {
+        offset: wordOffset
+      }
+    } : {};
+
+    axios.get(`/json`, params).then(res => {
       if(isEmptyObject(res.data)){
         console.log("apparently empty")
         return
       }
       let newWords = res.data;
+      console.log("response data: ",res.data,params)
       newWords = newWords.map(word => {
         word.urls = word.urls.filter(url => url.indexOf(" ")<0);
         return word;
-      })
+      }).filter( word => word.urls && word.urls.length)
       console.log('/json saved as newWords: ',newWords)
       newWords.forEach(function(element) { element.ready = false; });
       setWords(words.concat(newWords));
     });
   }
   useInterval(() => {
-    if(!words.length || !words[currentWord].urls)
+    if(!words.length || !words[currentWord])
       return
     //not  really a  good check  assumes  if  theres  anything there we're  good
-    console.log("count: ",count,", current: "+currentWord+", current urls length: ",words[currentWord] )
+    // console.log("count: ",count,", current: "+currentWord+", current urls length: ",words[currentWord] )
     //advance words
     if(words[currentWord].urls.length === count+1){
       setCount(0);
@@ -59,9 +66,9 @@ const App = () => {
     else {
       setCount(count+1);
     }
-    if (currentWord === words.length-1 && count === 0) {
-      console.log("queueing images")
-      queueImages();
+    if (currentWord+1 === words.length-1 && count === 0) {
+      console.log("queueing images starting at ",words[currentWord].word)
+      queueImages(words[currentWord+1].word);
     }
   }, 1000)
 
@@ -90,12 +97,16 @@ const App = () => {
     if(!words[currentWord] || !words[currentWord].urls)
       return
     console.log("effect used")
-    words.map(function(word){
+    words.map(function(word,i){
       const theClassName = "."+slug(word.word)+" .slide";
       imagesLoaded("."+slug(word.word)+" .slide",{background:true})
       .on("progress",function(instance,image){
-          if(!image.isLoaded)
-            console.log("failure!!",image)
+          if(!image.isLoaded){
+            console.log("failure!!",image);
+            var index = word.urls.findIndex(url => url = image.url)
+            words[i].urls = word.urls.slice(0,index-1).concat(word.urls.slice(index))
+          }
+
       }).on("always",function(i,e){
 
       }).on("done",function(){
@@ -112,7 +123,7 @@ const App = () => {
         return <div key={i+1} className={(i === currentWord ? "current " : " ")+slug(e.word)+" word testing"}>
           { e.urls && e.urls.map((url,j)  => {
             let slideClass = i === currentWord && j === count ? "active " : "";
-            slideClass += (i <= currentWord || j < count ? "used" : "");
+            slideClass += (i < currentWord || (i === currentWord && j < count) ? "used" : "");
             // console.log("added word: ",e,", url: ",url)
             return <div className={"slide "+slideClass} key={j} style={{backgroundImage: "url("+url+")"}}></div>
           })}
