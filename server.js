@@ -61,7 +61,7 @@ let getWords = (startingWord=null,count=10) => stream(startingWord,count).then(n
 getWords("pig");
 setInterval(() => {
   getWords(wordLinks[wordLinks.length-1].word)
-},10000)
+},30000)
 // setInterval(getWords,100000)
 
 app.use('/', express.static("app/build"));

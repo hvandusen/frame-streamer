@@ -70,7 +70,7 @@ const App = () => {
       console.log("queueing images starting at ",words[currentWord].word)
       queueImages(words[currentWord+1].word);
     }
-  }, 1000)
+  }, 10000)
 
   function useInterval(callback, delay) {
     const savedCallback = useRef();
@@ -120,7 +120,7 @@ const App = () => {
     <div className="yah">
       <div key={0}>count: {count} currentWord: {currentWord}</div>
       { ready ? words.filter(wordValid).map( (e,i)  => {
-        return <div key={i+1} className={(i === currentWord ? "current " : " ")+slug(e.word)+" word testing"}>
+        return <div key={i+1} className={(i === currentWord ? "current " : " ")+slug(e.word)+" word "}>
           { e.urls && e.urls.map((url,j)  => {
             let slideClass = i === currentWord && j === count ? "active " : "";
             slideClass += (i < currentWord || (i === currentWord && j < count) ? "used" : "");
