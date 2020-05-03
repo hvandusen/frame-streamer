@@ -8,13 +8,14 @@
     "build": "webpack --mode production",
     "start": "node server.js & webpack-dev-server --open --mode development",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "logs":  "heroku logs --app frame-streamer --tail" 
+    "logs": "heroku logs --app frame-streamer --tail"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.0",
     "express": "^4.17.1",
+    "google-images": "^2.1.0",
     "imagesloaded": "^4.1.4",
     "node-wordnet": "^0.1.12",
     "react": "^16.8.6",

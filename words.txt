@@ -6,7 +6,6 @@ age
 air
 amount
 answer
-anything
 apple
 area
 arm
