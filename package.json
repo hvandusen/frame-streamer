@@ -22,7 +22,12 @@
     "react-dom": "^16.8.6",
     "slugify": "^1.3.4",
     "wikijs": "^5.5.0",
-    "wndb-with-exceptions": "^3.0.2"
+    "wndb-with-exceptions": "^3.0.2",
+    "minimist": ">=0.2.1",
+    "acorn": ">=6.4.1",
+    "kind-of": ">=6.0.3",
+    "serialize-javascript": ">=2.1.1",
+    "lodash": ">=4.17.12"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

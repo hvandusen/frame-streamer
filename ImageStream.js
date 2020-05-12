@@ -1,5 +1,5 @@
 const Tangent = require("./Tangent.js")
-const imageSearch = require('./imageSearch.js');
+const imageSearch = require('./ImageSearch.js');
 
 //lets just leave these hard coded for now brah
 const IMAGE_INTERVAL = 10000
