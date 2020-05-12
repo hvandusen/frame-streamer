@@ -9,7 +9,7 @@ function extractGoodWords(string){
     return []
   var choices = string.split(" ");
   choices = choices.filter((w)=>{
-    return w.length>3 && ["of","a","to","from","the","for","with","because","than","anything"].indexOf(w)<0;
+    return w.length>3 && ["of","a","to","from","the","for","with","because","than","anything","shes","hes"].indexOf(w)<0;
   });
   return choices.dedup()
 }
@@ -19,21 +19,33 @@ class Tangent {
     this.searchTerm = words.random()
     this.history = [this.searchTerm]
   }
-  async search(len=60){
-    let results = [this.history.last()]
+  async search(len=60,word){
+    let results = [this.searchTerm]
+    console.log("searching. history: ",this.history)
     while(results.length<len){
-      if(results.length === 0)
-        results = [this.searchTerm]
-      results.push(await this.relatedWord(results.last()))
-      results = results.dedup()
-      !!results.last() ? null : results = results.slice(0,results.length-2)
+      let nextWord = await this.relatedWord(results.last())
+      if(!!nextWord){
+        results.push(nextWord)
+        results = results.dedup().filter(x => !!x)
+      }
+      else {
+        let attempt = results.pop()
+        if(attempt.charAt(attempt.length-1)==="s"){ //try removing an s for plurals, which wont always work
+          results.pop()
+          results.push(attempt.slice(0,attempt.length-1))
+        }
+        else(!!!results.pop()) // If we just popped the last element
+          results = [words.random()]
+      }
     }
     this.searchTerm = results.last()
     this.history = this.history.concat(results.slice(1))
-    console.log(this.history)
+    console.log("tangent:\n",results)
+    console.log("lngth: ",results.length,"\n")
     return results
   }
   async relatedWord(word){
+    console.log("finding word related to: ",word)
     var search = await wn.lookupAsync(word);
     var allRelated = []
     var tangents = search

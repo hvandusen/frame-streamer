@@ -3,18 +3,17 @@ const path = require('path')
 const app = express()
 const port = process.env.PORT || 3002;// === "production" ? 80 : 3002;
 const fs = require("fs")
-const Scheduler = require("./Scheduler.js");
+const ImageStream = require("./ImageStream.js");
 
-let scheduler = new Scheduler();
-scheduler.start()
+let images = new ImageStream();
+images.start()
 
 app.use('/', express.static("app/build"));
 
-app.get("/json/:timestamp", (req, res) => {
-  console.log("out param is ",req.params)
-  var timestamp = req.params.timestamp ? req.params.timestamp : "";
-  console.log("current schedule: ",scheduler.currentSchedule())
-    res.json(scheduler.currentSchedule(timestamp))
+app.get("/json", (req, res) => {
+  let schedule = images.get()
+  console.log("current schedule: ",schedule.images.length," items.")
+  res.json(schedule)
 })
 
 app.get("*", (req, res) => {
