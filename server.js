@@ -17,12 +17,17 @@ app.get("/json", (req, res) => {
 })
 
 app.get("/stop", (req, res) => {
-  schedule.stop()
+  images.stop()
+  res.redirect('/')
+})
+
+app.get("/pause", (req, res) => {
+  // images.stop()
   res.redirect('/')
 })
 
 app.get("/start", (req, res) => {
-  schedule.start()
+  images.start()
   res.redirect('/')
 })
 
