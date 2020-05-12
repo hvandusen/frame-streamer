@@ -2,7 +2,7 @@ const Tangent = require("./Tangent.js")
 const imageSearch = require('./ImageSearch.js');
 
 //lets just leave these hard coded for now brah
-const IMAGE_INTERVAL = 10000
+const IMAGE_INTERVAL = 12000
 const IMAGES_PER_WORD = 10
 const WORDS_AT_A_TIME = 10
 const QUERY_INTERVAL = IMAGE_INTERVAL*IMAGES_PER_WORD*WORDS_AT_A_TIME

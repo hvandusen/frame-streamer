@@ -7,6 +7,8 @@ var interval = 3000;
 var count = 0;
 var getImagesTimeout;
 var history = [];
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 getCanvasImgs()
 updateCanvas()
