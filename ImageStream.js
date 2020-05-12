@@ -2,33 +2,49 @@ const Tangent = require("./Tangent.js")
 const imageSearch = require('./imageSearch.js');
 
 //lets just leave these hard coded for now brah
-const IMAGE_INTERVAL = 10000 
+const IMAGE_INTERVAL = 10000
 const IMAGES_PER_WORD = 10
 const WORDS_AT_A_TIME = 10
 const QUERY_INTERVAL = IMAGE_INTERVAL*IMAGES_PER_WORD*WORDS_AT_A_TIME
 const GOOGLE_API_DELAY = 1500
 const resolveAfter = ms => new Promise(ok => setTimeout(ok, ms));
 const v = true
+let loadImagesInterval
+let popInterval
 
 class ImageQueue {
   constructor(opt) {
     this.startTime = Date.now()
     this.queue = []
     this.verbose = true;
+    this.active = false
   }
   async start(opts){
+    if(this.active)
+      return
+    this.active = true
     this.startTime = Date.now()
     this.tangent = new Tangent()
     await this.enqueue()
     //add to list periodically
     let that = this
-    this.print()
     setTimeout(this.enqueue.bind(this),QUERY_INTERVAL/2)
-    setInterval(function(context){
+    loadImagesInterval = setInterval(function(context){
       context.enqueue()
     },QUERY_INTERVAL,that)
     //remove first element at image interval
-    setInterval(this.remove.bind(this),IMAGE_INTERVAL)
+    popInterval = setInterval(this.remove.bind(this),IMAGE_INTERVAL)
+  }
+  isActive(){
+    return this.active
+  }
+  stop(){
+    if(!this.active)
+      return
+    clearInterval(loadImagesInterval)
+    clearInterval(popInterval)
+    this.active = false
+    this.queue = []
   }
   get(){
     return {

@@ -16,6 +16,16 @@ app.get("/json", (req, res) => {
   res.json(schedule)
 })
 
+app.get("/stop", (req, res) => {
+  schedule.stop()
+  res.redirect('/')
+})
+
+app.get("/start", (req, res) => {
+  schedule.start()
+  res.redirect('/')
+})
+
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "app/build", "index.html"));
 });
