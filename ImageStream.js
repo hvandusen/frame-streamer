@@ -18,13 +18,14 @@ class ImageQueue {
     this.queue = []
     this.verbose = true;
     this.active = false
+    this.paused = false
   }
   async start(opts){
     if(this.active)
       return
     this.active = true
     this.startTime = Date.now()
-    this.tangent = new Tangent()
+    this.tangent = this.paused ? this.tangent : new Tangent()
     await this.enqueue()
     //add to list periodically
     let that = this
@@ -34,9 +35,18 @@ class ImageQueue {
     },QUERY_INTERVAL,that)
     //remove first element at image interval
     popInterval = setInterval(this.remove.bind(this),IMAGE_INTERVAL)
+    this.paused = false
   }
   isActive(){
     return this.active
+  }
+  pause(){
+    if(!this.active)
+      return
+    clearInterval(loadImagesInterval)
+    clearInterval(popInterval)
+    this.active = false
+    this.pause = true
   }
   stop(){
     if(!this.active)
@@ -45,42 +55,43 @@ class ImageQueue {
     clearInterval(popInterval)
     this.active = false
     this.queue = []
+    this.paused = true
   }
   get(){
-    return {
+    let payload = {
       //we are using FIFO so first is last
       images: this.queue.slice().reverse().slice(),
       deliveryTime: Date.now(),
       interval: IMAGE_INTERVAL
     }
+    return payload
   }
   async enqueue(){
     let images
-    console.log("beginning to queue")
+    this.print("images ...")
     let terms = await this.tangent.search(WORDS_AT_A_TIME)
-    console.log("new terms: ",terms)
+    console.log("new terms: ",terms.join(", "))
     try {
       images = await this.queryImages(terms.slice().reverse())
       images = images.map((imgs) => imgs.slice(0,IMAGES_PER_WORD))
       images = Array.prototype.concat.apply([],images)
       Array.prototype.unshift.apply(this.queue,images)
       // console.log("added ",images.length+" images.\n"+this.queue.length+" total.")
-      this.print(" added")
     } catch (e) {
       console.log(e.toString())
     }
-    console.log("images finished")
+    this.print("images +")
   }
   print(addon=""){
+    var len = this.queue.length
     var str = this.queue.map(function(e,i){
-      //console.log(i,e)
-      return "-"+ (i % IMAGES_PER_WORD === 0 ? (i/IMAGES_PER_WORD) : "")
-    }).join("") + addon
+      return  i > len - (len%IMAGES_PER_WORD) ? "-" : ""+ (i % IMAGES_PER_WORD === 0 ? (i/IMAGES_PER_WORD) : "")
+    }).join("") + " "+ addon
     console.log(str)
   }
   remove(){
     this.queue.pop()
-    this.print(" popped")
+    this.print()
   }
   async queryImages(terms){
     const slowFetch = rateLimit1(imageSearch, 1500);

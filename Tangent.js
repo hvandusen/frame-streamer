@@ -21,7 +21,6 @@ class Tangent {
   }
   async search(len=60,word){
     let results = [this.searchTerm]
-    console.log("searching. history: ",this.history)
     while(results.length<len){
       let nextWord = await this.relatedWord(results.last())
       if(!!nextWord){
@@ -39,13 +38,11 @@ class Tangent {
       }
     }
     this.searchTerm = results.last()
-    this.history = this.history.concat(results.slice(1))
-    console.log("tangent:\n",results)
-    console.log("lngth: ",results.length,"\n")
+    this.history = this.history.concat(results)
+    console.log(this.history.map(t => t.charAt(0)).join(""))
     return results
   }
   async relatedWord(word){
-    console.log("finding word related to: ",word)
     var search = await wn.lookupAsync(word);
     var allRelated = []
     var tangents = search

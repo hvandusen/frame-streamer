@@ -11,9 +11,7 @@ images.start()
 app.use('/', express.static("app/build"));
 
 app.get("/json", (req, res) => {
-  let schedule = images.get()
-  console.log("current schedule: ",schedule.images.length," items.")
-  res.json(schedule)
+  res.json(images.get())
 })
 
 app.get("/stop", (req, res) => {
@@ -22,7 +20,7 @@ app.get("/stop", (req, res) => {
 })
 
 app.get("/pause", (req, res) => {
-  // images.stop()
+
   res.redirect('/')
 })
 
