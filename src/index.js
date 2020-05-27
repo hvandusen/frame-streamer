@@ -15,8 +15,8 @@ updateCanvas()
 
 function getCanvasImgs(){
   let response = axios.get('/json').then(function(resp){
-    let newImages = resp.data.images
-    console.log("got data",resp.data)
+    let allImages = resp.data.images
+    let newImages = allImages.slice(images.findIndex((e) => e.id === images[images.length-1].id))
     interval = resp.data.interval
     images = images.concat(newImages)
     .filter((img,i,self) => {
@@ -28,7 +28,7 @@ function getCanvasImgs(){
     if(0 === count++){
       console.log(images[0])
     }
-    getImagesTimeout = setTimeout(getCanvasImgs,newImages.length ? interval*newImages.length : interval)
+    getImagesTimeout = setTimeout(getCanvasImgs,newImages.length ? 1800000 : interval)
   })
 }
 

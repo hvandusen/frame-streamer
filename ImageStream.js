@@ -11,6 +11,7 @@ const resolveAfter = ms => new Promise(ok => setTimeout(ok, ms));
 const v = true
 let loadImagesInterval
 let popInterval
+let imageCount = 1
 
 class ImageQueue {
   constructor(opt) {
@@ -62,7 +63,8 @@ class ImageQueue {
       //we are using FIFO so first is last
       images: this.queue.slice().reverse().slice(),
       deliveryTime: Date.now(),
-      interval: IMAGE_INTERVAL
+      interval: IMAGE_INTERVAL,
+      id: imageCount++
     }
     return payload
   }
