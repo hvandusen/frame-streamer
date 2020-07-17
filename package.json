@@ -27,7 +27,7 @@
     "acorn": ">=6.4.1",
     "kind-of": ">=6.0.3",
     "serialize-javascript": ">=2.1.1",
-    "lodash": ">=4.17.12"
+    "lodash": ">=4.17.19"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
