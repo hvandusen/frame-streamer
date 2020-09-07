@@ -63,8 +63,7 @@ class ImageQueue {
       //we are using FIFO so first is last
       images: this.queue.slice().reverse().slice(),
       deliveryTime: Date.now(),
-      interval: IMAGE_INTERVAL,
-      id: imageCount++
+      interval: IMAGE_INTERVAL
     }
     return payload
   }
@@ -77,6 +76,9 @@ class ImageQueue {
       images = await this.queryImages(terms.slice().reverse())
       images = images.map((imgs) => imgs.slice(0,IMAGES_PER_WORD))
       images = Array.prototype.concat.apply([],images)
+      for (var i = images.length-1; i >= 0; i--) {
+        images[i].id = imageCount++
+      }
       Array.prototype.unshift.apply(this.queue,images)
       // console.log("added ",images.length+" images.\n"+this.queue.length+" total.")
     } catch (e) {

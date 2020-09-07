@@ -6,7 +6,8 @@
   "scripts": {
     "deploy": "git push heroku master",
     "build": "webpack --mode production",
-    "start": "node server.js && webpack-dev-server --open --mode development",
+    "dev": "webpack-dev-server --open --mode development ",
+    "start": "npm run dev && node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "logs": "heroku logs --app frame-streamer --tail"
   },

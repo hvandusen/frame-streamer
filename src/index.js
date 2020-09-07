@@ -7,16 +7,18 @@ var interval = 3000;
 var count = 0;
 var getImagesTimeout;
 var history = [];
+var recentId = 1
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 getCanvasImgs()
 updateCanvas()
-
 function getCanvasImgs(){
   let response = axios.get('/json').then(function(resp){
-    let allImages = resp.data.images
-    let newImages = allImages.slice(images.findIndex((e) => e.id === images[images.length-1].id))
+    let newImages = resp.data.images
+    //let allImages = resp.data.images
+    //let newImages = allImages.slice(images.findIndex((e) => e.id === images[images.length-1].id))
+    // console.log(allImages,images.findIndex((e) => e.id === recentId))
     interval = resp.data.interval
     images = images.concat(newImages)
     .filter((img,i,self) => {
@@ -24,6 +26,7 @@ function getCanvasImgs(){
          return (el.url === img.url)
        }) === i
     })
+    recentId = images[images.length - 1].id
     console.log("loaded ",newImages.length,", "+images.length+ " images")
     if(0 === count++){
       console.log(images[0])
